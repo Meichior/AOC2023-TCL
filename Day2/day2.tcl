@@ -28,9 +28,9 @@ proc get_gameID {line} {
 
 proc is_legit {reds greens blues} {
    
-    foreach red   $reds   { if {$red > 12}   {return 0} }
-    foreach green $greens { if {$green > 13} {return 0} }
-    foreach blue  $blues  { if {$blue > 14}  {return 0} }
+    foreach red   $reds   { if {$red   > 12}  {return 0} }
+    foreach green $greens { if {$green > 13}  {return 0} }
+    foreach blue  $blues  { if {$blue  > 14}  {return 0} }
 
     return 1
 }
@@ -43,17 +43,43 @@ proc validate_game {line} {
     set blues  [regexp -all -inline {\d+(?= b)} $line]
 
     if { [is_legit $reds $greens $blues]} {
-        return [get_gameID $line]
+        set id [get_gameID $line]
+    } else {
+        set id 0
     }
 
-    return 0
+    if {[llength $reds] != 0} {
+         set big_r  [lindex [lsort -integer -decreasing $reds] 0]
+    } else {
+        set big_r 1
+    }
+    
+    if {[llength $greens] != 0} {
+        set big_g  [lindex [lsort -integer -decreasing $greens] 0]
+    } else {
+        set big_g 1
+    }
+
+    if {[llength $blues] != 0} {
+        set big_b  [lindex [lsort -integer -decreasing $blues]  0]
+    } else {
+        set big_b 1
+    }
+
+    set power [expr {$big_r * $big_g * $big_b}]
+    puts $power
+    return [list $id $power]
 }
 
 
-set input [get_input_data day2]
-set sum 0
+set input [get_input_data "day2"]
+set sumID 0
+set sum_power 0
 foreach line $input {
-    set sum [expr { $sum + [validate_game $line] }]
+    set game_result [validate_game $line] 
+    set sumID     [expr { $sumID     + [lindex $game_result 0]}]
+    set sum_power [expr { $sum_power + [lindex $game_result 1]}]
 }
 
-puts $sum
+puts $sumID
+puts $sum_power
