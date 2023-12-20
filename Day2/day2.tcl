@@ -6,6 +6,10 @@ proc get_input_data {filename} {
     return [split $input_data \n]
 }
 
+
+proc lgetbig {list} {return [lindex [lsort -integer -decreasing $list] 0]}
+
+
 proc sum_color {colors} {
 
     if {[llength $colors] == 0} {return 0}
@@ -25,7 +29,7 @@ proc get_gameID {line} {
     return [lindex $id 1]
 }
 
-
+# idea -> make proc that apply an expression to each member of a list 
 proc is_legit {reds greens blues} {
    
     foreach red   $reds   { if {$red   > 12}  {return 0} }
